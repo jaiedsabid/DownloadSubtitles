@@ -1,4 +1,5 @@
 import requests
+import getpass
 import json
 import os
 
@@ -56,27 +57,31 @@ def getSubLink(sub_file_id: dict, token: dict) -> dict:
     return sub_link
 
 
-def getUserData(token: dict) -> dict:
+def showUserData(token: dict):
     '''
     Return a dict object contains user data
     '''
     url = 'https://www.opensubtitles.com/api/v1/infos/user'
     data = requests.get(url=url, headers=token)
-    return json.loads(data.text)
-
+    data = json.loads(data.text)
+    message = (
+        '''\nUser ID: {0}\nlimit: {1}\nRemaining: {2}'''
+    ).format(data['data']['user_id'], data['data']['allowed_downloads'],
+             data['data']['remaining_downloads'])
+    print(message)
 
 def main():
     token = {}
 
     while True:
         message = (
-        '''
+            '''
         *********************************
         *         OpenSubtitles         *
         *        Choose an Option       *
         *********************************
         
-        1) Login OpenSubtitles
+        1) Login/View Account
         2) Movie Subtitle
         3) Tv Series Subtitle
         4) Exit
@@ -84,12 +89,13 @@ def main():
         )
         print(message)
         option = int(input('=> '))
-        
+
         if option == 1 and len(token) == 0:
             username = str(input('Username: '))
-            passowrd = str(input('Password: '))
+            passowrd = getpass.getpass('Password: ')
             header_ = {'username': username, 'password': passowrd}
             token = getAuthToken(header=header_)
+            print('\nLogin successful...')
 
         elif option == 2:
             query = str(input('\nEnter a movie title: '))
@@ -104,7 +110,7 @@ def main():
             print(f'\nFile saved. Location: {save_path}\n')
 
         elif option == 1 and len(token) > 0:
-            print('\nYou have already loged in.')
+            showUserData(token)
 
         elif option == 4:
             print('Exit Successfully...')
