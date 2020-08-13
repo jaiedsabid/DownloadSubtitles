@@ -82,9 +82,8 @@ def main():
         *********************************
         
         1) Login/View Account
-        2) Movie Subtitle
-        3) Tv Series Subtitle
-        4) Exit
+        2) Movie/TV Series Subtitle
+        3) Exit
         '''
         )
         print(message)
@@ -98,8 +97,8 @@ def main():
             print('\nLogin successful...')
 
         elif option == 2:
-            query = str(input('\nEnter a movie title: '))
-            movie_title = {'languages': 'en', 'query': query, 'type': 'movie'}
+            query = str(input('\nMovie/Tv Series title: '))
+            movie_title = {'languages': 'en', 'query': query, 'type': 'all'}
             file_id = findMovieSubIdByName(movie_title, token)
             link = getSubLink(file_id, token)
             sub = requests.get(url=link['link'])
@@ -112,7 +111,7 @@ def main():
         elif option == 1 and len(token) > 0:
             showUserData(token)
 
-        elif option == 4:
+        elif option == 3:
             print('Exit Successfully...')
             break
 
